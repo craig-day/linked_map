@@ -105,6 +105,8 @@ defmodule LinkedMap do
       }
   """
   @spec add_new(__MODULE__.t(), any) :: __MODULE__.t()
+  def add_new(linked_map, value)
+
   def add_new(%__MODULE__{items: items} = lm, value) do
     if Map.has_key?(items, value) do
       lm
@@ -236,6 +238,8 @@ defmodule LinkedMap do
       ** (LinkedMap.MissingValueError) value "b" is not present
   """
   @spec remove!(LinkedMap.t(), any) :: LinkedMap.t()
+  def remove!(linked_map, value)
+
   def remove!(%__MODULE__{items: items} = lm, value) do
     if Map.has_key?(items, value) do
       remove(lm, value)
