@@ -45,6 +45,32 @@ defmodule LinkedMapTest do
     assert result.items["c"].next == nil
   end
 
+  test "add/2 with an existing value to a single item map" do
+    map = LinkedMap.new() |> LinkedMap.add("a")
+    result = map |> LinkedMap.add("a")
+
+    assert result.head == "a"
+    assert result.tail == "a"
+    assert Map.keys(result.items) == ["a"]
+    assert result.items["a"].previous == nil
+    assert result.items["a"].next == nil
+  end
+
+  test "add/2 with an existing value to a N item map" do
+    map = LinkedMap.new() |> LinkedMap.add("a") |> LinkedMap.add("b") |> LinkedMap.add("c")
+    result = map |> LinkedMap.add("b")
+
+    assert result.head == "a"
+    assert result.tail == "b"
+    assert Map.keys(result.items) == ["a", "b", "c"]
+    assert result.items["a"].previous == nil
+    assert result.items["a"].next == "c"
+    assert result.items["c"].previous == "a"
+    assert result.items["c"].next == "b"
+    assert result.items["b"].previous == "c"
+    assert result.items["b"].next == nil
+  end
+
   test "add_new/2 with a new item" do
     map = LinkedMap.new() |> LinkedMap.add("a")
     result = map |> LinkedMap.add_new("b")

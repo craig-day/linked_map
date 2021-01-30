@@ -11,6 +11,8 @@
 ### Bug Fixes
 
 - Fix some incorrect references to `__MODULE__` in docs
+- Correctly update linkages and move `value` to then end when calling `add/2`
+  with an existing value
 
 ---
 

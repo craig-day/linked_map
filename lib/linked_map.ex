@@ -57,7 +57,7 @@ defmodule LinkedMap do
 
   def add(%__MODULE__{head: head, tail: tail} = lm, value) do
     if head == tail do
-      add_second_item(lm, value)
+      if head == value, do: lm, else: add_second_item(lm, value)
     else
       add_nth_item(lm, value)
     end
@@ -77,10 +77,11 @@ defmodule LinkedMap do
 
   defp add_nth_item(%__MODULE__{tail: tail, items: items} = lm, value) do
     new_node = %Node{value: value, previous: tail}
-    replacement_tail = %{items[tail] | next: new_node.value}
+    clean_items = if Map.has_key?(items, value), do: remove(lm, value).items, else: items
+    replacement_tail = %{clean_items[tail] | next: new_node.value}
 
     updated_items =
-      items
+      clean_items
       |> Map.put(tail, replacement_tail)
       |> Map.put(new_node.value, new_node)
 
