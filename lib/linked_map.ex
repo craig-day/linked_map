@@ -36,7 +36,7 @@ defmodule LinkedMap do
   ## Examples
 
       iex> LinkedMap.new() |> LinkedMap.add("foo")
-      iex(6)> LinkedMap.new |> LinkedMap.add("foo") |> LinkedMap.add("bar")
+      iex> LinkedMap.new |> LinkedMap.add("foo") |> LinkedMap.add("bar")
       %LinkedMap{
         head: "foo",
         items: %{
