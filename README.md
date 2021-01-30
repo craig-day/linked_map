@@ -1,11 +1,23 @@
 # LinkedMap
 
-**TODO: Add description**
+A LinkedMap is a order-aware colelction with the following properties:
+
+  - A `head` pointer
+  - A `tail` pointer
+  - An `items` map where the key is the content itself, and the value is a `LinkedMap.Node`
+    which has `previous` and `next` pointers
+
+I built this to have a collection I can traverse in either direction, but also
+be able to remove items in less than linear time. I also didn't want something
+that needed to be sorted or rebalanced after each addition or removal.
+
+This uses Elixir's [`Map`](https://hexdocs.pm/elixir/Map.html) underneath, so
+removing arbitrary items can happen in logarithmic time, rather than linear
+time that most sorted collections incur.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `linked_map` to your list of dependencies in `mix.exs`:
+Add `linked_map` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -14,8 +26,3 @@ def deps do
   ]
 end
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/linked_map](https://hexdocs.pm/linked_map).
-
