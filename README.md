@@ -26,3 +26,7 @@ def deps do
   ]
 end
 ```
+
+## Usage
+
+See the [documentation](https://hexdocs.pm/linked_map) for API reference and examples.
