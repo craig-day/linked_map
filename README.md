@@ -22,7 +22,7 @@ Add `linked_map` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:linked_map, "~> 0.1.0"}
+    {:linked_map, "~> 0.2.0"}
   ]
 end
 ```
