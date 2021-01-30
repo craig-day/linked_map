@@ -1,11 +1,13 @@
 defmodule LinkedMap do
   @moduledoc """
-  A LinkedMap is a key-value store with the following properties:
+  A LinkedMap is a order-aware colelction with the following properties:
 
     - A `head` pointer
     - A `tail` pointer
-    - An `items` map where the key is the content itself, and the value is a %__MODULE__.Node{}
+    - An `items` map where the key is the content itself, and the value is a `LinkedMap.Node`
+      which has `previous` and `next` pointers
   """
+  alias LinkedMap.{DuplicateValueError, MissingValueError}
   alias LinkedMap.Node
 
   @enforce_keys [:items]
@@ -14,9 +16,9 @@ defmodule LinkedMap do
   @type t :: %__MODULE__{head: any(), tail: any(), items: map()}
 
   @doc """
-  Create a new LinkedMap
+  Create a new `LinkedMap`
 
-  Returns a new empty LinkedMap.
+  Returns a new empty `LinkedMap`.
 
   ## Examples
 
@@ -27,9 +29,9 @@ defmodule LinkedMap do
   def new(), do: %__MODULE__{items: %{}}
 
   @doc """
-  Adds a new item to the linked map.
+  Adds an item to the linked map, or moves an existing one to tail.
 
-  Returns the updated LinkedMap.
+  Returns the updated `LinkedMap`.
 
   ## Examples
 
@@ -86,9 +88,55 @@ defmodule LinkedMap do
   end
 
   @doc """
+  Adds a new item to the linked map, unless it already exists.
+
+  Returns the updated `LinkedMap`.
+
+  ## Examples
+
+      iex> LinkedMap.new() |> LinkedMap.add("a") |> LinkedMap.add_new("a")
+      %LinkedMap{
+        head: "a",
+        items: %{
+          "a" => %Node{next: nil, previous: nil, value: "a"}
+        },
+        tail: "a"
+      }
+  """
+  @spec add_new(__MODULE__.t(), any) :: __MODULE__.t()
+  def add_new(%__MODULE__{items: items} = lm, value) do
+    if Map.has_key?(items, value) do
+      lm
+    else
+      add(lm, value)
+    end
+  end
+
+  @doc """
+  Adds a new item to the linked map, or raises if `value` already exists.
+
+  Returns the updated `LinkedMap` or raises if `value` already exists.
+
+  Behaves the same as `add_new/2` but raises if `value` already exists.
+
+  ## Examples
+
+      iex> LinkedMap.new() |> LinkedMap.add("a") |> LinkedMap.add_new!("a")
+      ** (LinkedMap.DuplicateValueError) value "a" is already present
+  """
+  @spec add_new!(__MODULE__.t(), any) :: __MODULE__.t()
+  def add_new!(%__MODULE__{items: items} = lm, value) do
+    if Map.has_key?(items, value) do
+      raise DuplicateValueError, value: value
+    else
+      add(lm, value)
+    end
+  end
+
+  @doc """
   Remove an item from the linked map if it exists.
 
-  Returns the updated LinkedMap.
+  Returns the updated `LinkedMap`.
 
   ## Examples
 
@@ -172,5 +220,26 @@ defmodule LinkedMap do
       |> Map.put(next_node.value, replacement_next_node)
 
     %{lm | items: updated_items}
+  end
+
+  @doc """
+  Removes an item from the linked map, or raises if it doesn't exist.
+
+  Returns the updated `LinkedMap`, or raises if `value` doesn't exist.
+
+  Behavies the same as `remove/2`, but raises if `value` doesn't exist.
+
+  ## Examples
+
+      iex> LinkedMap.new() |> LinkedMap.add("a") |> LinkedMap.remove!("b")
+      ** (LinkedMap.MissingValueError) value "b" is not present
+  """
+  @spec remove!(LinkedMap.t(), any) :: LinkedMap.t()
+  def remove!(%__MODULE__{items: items} = lm, value) do
+    if Map.has_key?(items, value) do
+      remove(lm, value)
+    else
+      raise MissingValueError, value: value
+    end
   end
 end
