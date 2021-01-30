@@ -247,4 +247,77 @@ defmodule LinkedMap do
       raise MissingValueError, value: value
     end
   end
+
+  @doc """
+  Returns the number of items in the `linked_map`.
+
+  ## Examples
+
+      iex> LinkedMap.new() |> LinkedMap.add("a") |> LinkedMap.size()
+      1
+  """
+  @spec size(LinkedMap.t()) :: non_neg_integer
+  def size(%__MODULE__{items: items}), do: map_size(items)
+
+  @doc """
+  Returns whether the given `value` exists in the given `linked_map`.
+
+  ## Examples
+
+      iex> LinkedMap.new() |> LinkedMap.add("a") |> LinkedMap.member?("a")
+      true
+
+      iex> LinkedMap.new() |> LinkedMap.add("a") |> LinkedMap.member?("b")
+      false
+  """
+  @spec member?(LinkedMap.t(), any) :: boolean
+  def member?(%__MODULE__{items: items}, value), do: Map.has_key?(items, value)
+
+  @doc """
+  Returns the values as a `List` in order.
+
+  ## Examples
+
+      iex> LinkedMap.new() |> LinkedMap.add("a") |> LinkedMap.add("b") |> LinkedMap.to_list()
+  """
+  @spec to_list(LinkedMap.t()) :: [any()]
+  def to_list(linked_map)
+
+  def to_list(%__MODULE__{head: head, items: items}) do
+    case map_size(items) do
+      0 -> []
+      1 -> [head]
+      _ -> [head] ++ remaining_items(head, items)
+    end
+  end
+
+  defp remaining_items(nil, _items), do: []
+
+  defp remaining_items(current, items) do
+    next = items[current].next
+
+    if next == nil do
+      []
+    else
+      [next] ++ remaining_items(next, items)
+    end
+  end
+
+  defimpl Enumerable do
+    def count(linked_map) do
+      {:ok, LinkedMap.size(linked_map)}
+    end
+
+    def member?(linked_map, value) do
+      {:ok, LinkedMap.member?(linked_map, value)}
+    end
+
+    # Let the default reduce-based implementation be used since we
+    # require traversal of all items to maintain ordering.
+    def slice(_linked_map), do: {:error, __MODULE__}
+
+    def reduce(linked_map, acc, fun) do
+      Enumerable.List.reduce(LinkedMap.to_list(linked_map), acc, fun)
+    end
+  end
 end

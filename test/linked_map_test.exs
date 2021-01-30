@@ -198,4 +198,23 @@ defmodule LinkedMapTest do
       LinkedMap.remove!(map, "b")
     end
   end
+
+  test "size/1" do
+    map = LinkedMap.new() |> LinkedMap.add("a")
+
+    assert LinkedMap.size(map) == 1
+  end
+
+  test "member?/2" do
+    map = LinkedMap.new() |> LinkedMap.add("a")
+
+    assert LinkedMap.member?(map, "a") == true
+    assert LinkedMap.member?(map, "b") == false
+  end
+
+  test "to_list/1" do
+    map = LinkedMap.new() |> LinkedMap.add("b") |> LinkedMap.add("a")
+
+    assert LinkedMap.to_list(map) == ["b", "a"]
+  end
 end

@@ -1,4 +1,6 @@
 defmodule LinkedMap.MissingValueError do
+  @moduledoc false
+
   defexception [:value, :message]
 
   @impl true

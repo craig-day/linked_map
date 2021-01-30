@@ -1,4 +1,6 @@
 defmodule LinkedMap.DuplicateValueError do
+  @moduledoc false
+
   defexception [:value, :message]
 
   @impl true
