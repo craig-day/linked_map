@@ -1,10 +1,13 @@
 defmodule LinkedMap.Node do
-  @moduledoc """
-  A node in the linked map with `previous` and `next` pointers.
-  """
+  @moduledoc false
 
-  @enforce_keys [:value]
+  @enforce_keys :value
   defstruct [:value, :previous, :next]
 
-  @type t :: %__MODULE__{value: any(), previous: any(), next: any()}
+  @typedoc false
+  @type t :: %__MODULE__{
+          value: LinkedMap.value(),
+          previous: LinkedMap.key(),
+          next: LinkedMap.key()
+        }
 end
